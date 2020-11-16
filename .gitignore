@@ -1,0 +1,7 @@
+__pycache__/
+/dist
+/tmp
+/out-tsc
+/resources/__pycache__
+/resources/models/__pycache__
+/http/__pycache__
