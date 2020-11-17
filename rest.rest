@@ -1,0 +1,9 @@
+POST http://127.0.0.1:5000/table HTTP/1.1
+content-type: application/json
+
+{
+  "table_name": "Tabela 7",
+  "user_id": 1
+}
+
+###

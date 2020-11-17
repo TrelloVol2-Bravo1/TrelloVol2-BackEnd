@@ -102,6 +102,10 @@ class UserAuth(Resource):
     @staticmethod
     def delete(): # logout
         key = DBAuth.query.filter_by(user_id=request.headers.get('x-user-id'), api_key=request.headers.get('x-api-key')).first()
+
+        if key is None:
+             return {'status_code': 'failed', 'message': 'No such keys'}, 400
+
         db.session.delete(key)
         db.session.commit()
         return {'status_code': 'success', 'message': 'Your api key has been deleted'}, 200
