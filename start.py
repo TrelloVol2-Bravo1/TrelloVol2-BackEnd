@@ -4,13 +4,13 @@ app = Flask('TrelloB')
 from flask_cors import CORS
 CORS(app)
 
-from TrelloB.config import applyConfig
+from .config import applyConfig
 applyConfig(app)
 
-from TrelloB.http.afterware import afterware
+from .http.afterware import afterware
 app.after_request(afterware)
 
-from TrelloB.http.Router import Router
+from .http.Router import Router
 Router(app)
 
 # Start a webserver
