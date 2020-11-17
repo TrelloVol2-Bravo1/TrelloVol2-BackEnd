@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask_restful import Api
 from werkzeug.exceptions import HTTPException
-from TrelloB.start import app
+from TrelloB.app import app
 
 class FlaskAPI(Api):
     def error_router(self, original_handler, e):

@@ -1,4 +1,4 @@
-from TrelloB.start import app
+from TrelloB.app import app
 
 if __name__ == "__main__":
 	app.run()

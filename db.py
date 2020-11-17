@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from TrelloB.start import app
+from TrelloB.app import app
 
 db = SQLAlchemy(app)
 db.app = app
