@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS "auth"
     "user_id"  INTEGER,
     "api_key"  VARCHAR(256),
     "api_date" DATETIME,
-    PRIMARY KEY ("api_id")
+    PRIMARY KEY ("api_id")ą zm
 );
 
 CREATE TABLE IF NOT EXISTS "table"
