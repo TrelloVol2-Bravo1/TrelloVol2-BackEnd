@@ -11,13 +11,13 @@ class DBTable(db.Model):
     __tablename__ = 'table'
     __table_args__ = {'extend_existing': True}
 
-    table_id = db.Column(db.Integer, primary_key=True)
-    table_name = db.Column(db.String(64), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False)
     user_id = db.Column(db.Integer, index=True)
 
     def setTableName(self, newName):
-        if newName is not None and len(newName) > 4 and self.table_name != newName:
-            self.table_name = newName
+        if newName is not None and len(newName) > 4 and self.name != newName:
+            self.name = newName
 
     def setUserId(self, user_id):
         if user_id is not None:
@@ -25,7 +25,7 @@ class DBTable(db.Model):
 
     def updateTable(self, args):
         results = list()
-        results.append(self.setTableName(args["table_name"]))
+        results.append(self.setTableName(args["name"]))
         results.append(self.setUserId(args["user_id"]))
 
         for result in results:
@@ -33,7 +33,7 @@ class DBTable(db.Model):
                 return result
 
     def putRequest(self, args):
-        if args["table_name"] is None:
+        if args["name"] is None:
             return {'status_code': 'missing data',
                     "message": "There is no data to update"}, 400
 
@@ -65,7 +65,7 @@ class DBTable(db.Model):
 
 class DBTableSchema(ma.Schema):
     class Meta:
-        fields = ('table_id', 'table_name', 'user_id')
+        fields = ('id', 'name', 'user_id')
 
 
 table_schema = DBTableSchema()

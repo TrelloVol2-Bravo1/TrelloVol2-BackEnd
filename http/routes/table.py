@@ -3,4 +3,4 @@ from TrelloB.resources.Table import TableResource, TablesResource
 
 def routes(register):
     register(TablesResource, '/table')
-    register(TableResource, '/table/<int:table_id>')
+    register(TableResource, '/table/<int:id>')

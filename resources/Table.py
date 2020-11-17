@@ -6,46 +6,46 @@ from TrelloB.db import db, ma
 from TrelloB.resources.models.DBAuth import DBAuth
 
 parser = reqparse.RequestParser()
-parser.add_argument('table_id')
-parser.add_argument('table_name')
+parser.add_argument('id')
+parser.add_argument('name')
 parser.add_argument('user_id')
 
 class TableResource(Resource):
     @staticmethod
     # @requireAuth
-    def get(table_id):
-        if table_id is None:
+    def get(id):
+        if id is None:
             return {'status_code': 'missing_data', 'message': 'There is no ID in request'}, 400
 
         # user = DBUser.query.filter_by(id=user_id).first()
-        table = DBTable.query.get(table_id)
+        table = DBTable.query.get(id)
         if table is None:
             return {'status_code': 'not_found', 'message': 'There is no Table with such ID'}, 404
 
-        if table == table.table_id:
+        if table == table.id:
             return {'status_code': 'success', 'data': table_schema.dump(table)}, 200
 
     @staticmethod
-    def delete(table_id):
-        table = DBTable.query.get(table_id)
+    def delete(id):
+        table = DBTable.query.get(id)
 
-        if table_id is None:
+        if id is None:
             return {'status_code': 'missing_data', 'message': 'There is no ID in request'}, 400
 
         if table is None:
             return {'status_code': 'not_found', 'message': 'There is no Table with such ID'}, 404
 
-        if table_id == table.table_id:
+        if id == table.id:
             db.session.delete(table)
             db.session.commit()
             return {'status_code': 'success', 'message': 'Table has been deleted'}, 200
 
     @staticmethod
-    def put(table_id):
+    def put(id):
         args = parser.parse_args()
-        table = DBTable.query.get(table_id)
+        table = DBTable.query.get(id)
 
-        if table_id is None:
+        if id is None:
             return {'status_code': 'missing_data', 'message': 'There is no ID in request'}, 400
 
         if table is None:
