@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS "auth"
     "user_id"  INTEGER,
     "api_key"  VARCHAR(256),
     "api_date" DATETIME,
-    PRIMARY KEY ("api_id")ą zm
+    PRIMARY KEY ("api_id")
 );
 
 CREATE TABLE IF NOT EXISTS "table"
@@ -27,7 +27,13 @@ CREATE TABLE IF NOT EXISTS "table"
     PRIMARY KEY ("table_id")
 );
 
-INSERT INTO "user" ("id", "name", "email", "password_hash", "access_level")
-VALUES(1,"admin", "admin@admin.pl", "$6$rounds=656000$.TQuK6zBu0dPK4p0$.DEH3JxVHVvXEKv.3uq/WDzM5i2cA5rzQuM5bIQmqc6xu4Oosf99NL4eEj77hv/J4zE./A3GJhiCFxISnWeZV0", 0);
+CREATE TABLE IF NOT EXISTS "list"
+(
+    "list_id"   INTEGER NOT NULL,
+    "list_name"  VARCHAR(64) NOT NULL,
+    "table_id"  INTEGER NOT NULL,
+    PRIMARY KEY ("list_id")
+);
+
 
 COMMIT;
