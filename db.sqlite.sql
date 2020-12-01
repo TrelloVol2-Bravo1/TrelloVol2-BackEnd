@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS "auth"
     "user_id"  INTEGER,
     "api_key"  VARCHAR(256),
     "api_date" DATETIME,
-    PRIMARY KEY ("api_id")ą zm
+    PRIMARY KEY ("api_id")
 );
 
 CREATE TABLE IF NOT EXISTS "table"
@@ -25,6 +25,23 @@ CREATE TABLE IF NOT EXISTS "table"
     "table_name"  VARCHAR(64) NOT NULL,
     "user_id"  INTEGER NOT NULL,
     PRIMARY KEY ("table_id")
+);
+
+CREATE TABLE IF NOT EXISTS "list"
+(
+    "list_id"   INTEGER NOT NULL,
+    "list_name"  VARCHAR(64) NOT NULL,
+    "table_id"  INTEGER NOT NULL,
+    PRIMARY KEY ("list_id")
+);
+
+CREATE TABLE IF NOT EXISTS "card"
+(
+    "card_id"   INTEGER NOT NULL,
+    "card_name"  VARCHAR(64) NOT NULL,
+    "card_description" VARCHAR(1028),
+    "list_id"  INTEGER NOT NULL,
+    PRIMARY KEY ("card_id")
 );
 
 INSERT INTO "user" ("id", "name", "email", "password_hash", "access_level")
