@@ -35,5 +35,13 @@ CREATE TABLE IF NOT EXISTS "list"
     PRIMARY KEY ("list_id")
 );
 
+CREATE TABLE IF NOT EXISTS "card"
+(
+    "card_id"   INTEGER NOT NULL,
+    "card_name"  VARCHAR(64) NOT NULL,
+    "card_description" VARCHAR(1028),
+    "list_id"  INTEGER NOT NULL,
+    PRIMARY KEY ("card_id")
+);
 
 COMMIT;
