@@ -1,4 +1,5 @@
 from Backend.db import db, ma
+from datetime import datetime
 
 
 class DBCard(db.Model):
@@ -9,6 +10,8 @@ class DBCard(db.Model):
     card_name = db.Column(db.String(64), nullable=False)
     card_description = db.Column(db.String(1028), nullable=True)
     list_id = db.Column(db.Integer, index=True)
+    card_deadline = db.Column(db.DATETIME, default=datetime.utcnow())
+    is_archived = db.Column(db.Integer, default=0)
 
     def setCardName(self, newName):
         if newName is not None and len(newName) > 4 and self.card_name != newName:
@@ -22,12 +25,22 @@ class DBCard(db.Model):
         if newDescription is not None and len(newDescription) > 4 and self.card_description != newDescription:
             self.card_description = newDescription
 
+    def setIsArchived(self, is_archived):
+        if is_archived is not None:
+            self.is_archived = is_archived
+
+    def setDeadline(self, newDeadline):
+        if newDeadline is not None:
+            self.card_deadline = datetime.strptime(newDeadline, "%d/%m/%Y %H:%M:%S")
+
 
     def updateCard(self, args):
         results = list()
         results.append(self.setCardName(args["card_name"]))
         results.append(self.setCardDescription(args["card_description"]))
         results.append(self.setListId(args["list_id"]))
+        results.append(self.setDeadline(args['card_deadline']))
+        results.append(self.setIsArchived(args['is_archived']))
 
         for result in results:
             if result != None:
@@ -66,7 +79,7 @@ class DBCard(db.Model):
 
 class DBCardSchema(ma.Schema):
     class Meta:
-        fields = ('card_id', 'card_name', 'card_description', 'list_id')
+        fields = ('card_id', 'card_name', 'card_description', 'list_id', 'card_deadline', 'is_archived')
 
 
 card_schema = DBCardSchema()

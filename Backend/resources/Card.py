@@ -13,6 +13,8 @@ parser.add_argument('card_name')
 parser.add_argument('card_description')
 parser.add_argument('list_id')
 parser.add_argument('user_id')
+parser.add_argument('card_deadline')
+parser.add_argument('is_archived')
 
 class CardResource(Resource):
     @staticmethod
@@ -38,6 +40,9 @@ class CardResource(Resource):
 
         if card is None:
             return {'status_code': 'not_found', 'message': 'There is no Card with such ID'}, 404
+
+        if card.is_archived == 0:
+            return {'status_code': 'not archived', 'message': 'Card must be archived to be deleted'}, 400
 
         if card_id == card.card_id:
             db.session.delete(card)

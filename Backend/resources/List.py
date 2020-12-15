@@ -10,8 +10,12 @@ parser = reqparse.RequestParser()
 parser.add_argument('list_id')
 parser.add_argument('list_name')
 parser.add_argument('table_id')
+parser.add_argument('list_order')
+parser.add_argument('is_archived')
+
 
 class ListResource(Resource):
+
     @staticmethod
     # @requireAuth
     def get(list_id):
@@ -36,6 +40,9 @@ class ListResource(Resource):
         if list is None:
             return {'status_code': 'not_found', 'message': 'There is no List with such ID'}, 404
 
+        if list.is_archived == 0:
+            return {'status_code': 'not archived', 'message': 'List must be archived to be deleted'}, 400
+
         if list_id == list.list_id:
             db.session.delete(list)
             db.session.commit()
@@ -45,6 +52,30 @@ class ListResource(Resource):
     def put(list_id):
         args = parser.parse_args()
         list = DBList.query.get(list_id)
+        actual_list_order = list.list_order
+        given_list_order = int(args['list_order'])
+        table_id = args['table_id']
+        lists = DBList.query.filter(DBList.table_id == table_id).group_by(DBList.list_order).all()
+
+        print(given_list_order)
+        print(actual_list_order)
+        print()
+
+        if given_list_order < actual_list_order:
+            for i in range(given_list_order - 1, len(lists)):
+                lists[i].setListOrder(i + 2)
+                db.session.add(lists[i])
+                db.session.commit()
+                print(i)
+
+        if given_list_order > actual_list_order:
+            for i in range(given_list_order - 1, actual_list_order - 2, -1):
+                lists[i].setListOrder(i)
+                db.session.add(lists[i])
+                db.session.commit()
+                print(i)
+
+
 
         if list_id is None:
             return {'status_code': 'missing_data', 'message': 'There is no ID in request'}, 400
@@ -79,6 +110,12 @@ class ListsResource(Resource):
         #    return {'status_code': 'failed', 'message': 'Permission denied'}, 400
         #args["user_id"] = key.user_id
 
+
+        #autoinkrementacja kolejności list w tablicy
+        table_id = args['table_id']
+        lists = DBList.query.filter(DBList.table_id == table_id).all()
+        args['list_order'] = len(lists) + 1
+
         result = DBList.register(args)
         if result != None:
             return result
@@ -87,6 +124,6 @@ class ListsResource(Resource):
 class ListsTableResource(Resource):
     @staticmethod
     def get(table_id):
-        lists_table = DBList.query.filter(DBList.table_id == table_id)
+        lists_table = DBList.query.filter(DBList.table_id == table_id).group_by(DBList.list_order).all()
         result = lists_schema.dump(lists_table)
         return {'status_code': 'success', 'data': result}, 200
