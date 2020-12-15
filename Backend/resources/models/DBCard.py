@@ -1,10 +1,4 @@
 from Backend.db import db, ma
-import re
-from datetime import datetime
-from uuid import uuid4
-from passlib.apps import custom_app_context as pwd_context
-
-from Backend.resources.models.DBAuth import DBAuth
 
 
 class DBCard(db.Model):

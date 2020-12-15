@@ -1,5 +1,6 @@
 from flask_restful import reqparse, Resource, request
 
+from Backend.resources.models.DBCardMembers import DBCardMembers
 from Backend.resources.models.DBCard import DBCard, card_schema, cards_schema
 from Backend.db import db, ma
 
@@ -11,6 +12,7 @@ parser.add_argument('card_id')
 parser.add_argument('card_name')
 parser.add_argument('card_description')
 parser.add_argument('list_id')
+parser.add_argument('user_id')
 
 class CardResource(Resource):
     @staticmethod
@@ -84,9 +86,42 @@ class CardsResource(Resource):
         if result != None:
             return result
 
+
 class CardsListResource(Resource):
     @staticmethod
     def get(list_id):
         cards_list = DBCard.query.filter(DBCard.list_id == list_id)
         result = cards_schema.dump(cards_list)
         return {'status_code': 'success', 'data': result}, 200
+
+
+class CardMembersResource(Resource):
+    @staticmethod
+    def post():
+        card_members = DBCardMembers()
+        card_id = parser.parse_args()['card_id']
+        user_id = parser.parse_args()['user_id']
+
+        member = DBCardMembers.query.filter(DBCardMembers.card_id == card_id, DBCardMembers.user_id == user_id).first()
+        if member is not None:
+            return {'status code': 'failed', 'meassage': 'This user is actually connected with this card'}, 400
+
+        result = card_members.register(card_id, user_id)
+
+        return result, 200
+
+    @staticmethod
+    def delete():
+        card_id = parser.parse_args()['card_id']
+        user_id = parser.parse_args()['user_id']
+
+        member = DBCardMembers.query.filter(DBCardMembers.card_id == card_id, DBCardMembers.user_id == user_id).first()
+        if member is None:
+            return {'status code': 'failed', 'meassage': 'This user is not connected with this card'}, 400
+
+        db.session.delete(member)
+        db.session.commit()
+
+        return {'status code': 'success', "meassage": "Member deleted"}, 200
+
+
