@@ -1,6 +1,6 @@
 from flask_restful import reqparse, Resource, request
 
-from Backend.resources.models.DBCardMembers import DBCardMembers
+from Backend.resources.models.DBCardMembers import DBCardMembers, cardMemberSchema, cardsMemberSchema
 from Backend.resources.models.DBCard import DBCard, card_schema, cards_schema
 from Backend.db import db, ma
 
@@ -100,7 +100,7 @@ class CardsListResource(Resource):
         return {'status_code': 'success', 'data': result}, 200
 
 
-class CardMembersResource(Resource):
+class CardMemberResource(Resource):
     @staticmethod
     def post():
         card_members = DBCardMembers()
@@ -128,5 +128,14 @@ class CardMembersResource(Resource):
         db.session.commit()
 
         return {'status code': 'success', "meassage": "Member deleted"}, 200
+
+class CardMembersResource(Resource):
+    @staticmethod
+    def get(card_id):
+        members = DBCardMembers.query.filter(DBCardMembers.card_id == card_id).all()
+        result = cardsMemberSchema.dump(members)
+        return {'status_code': 'success', 'data': result}, 200
+
+
 
 

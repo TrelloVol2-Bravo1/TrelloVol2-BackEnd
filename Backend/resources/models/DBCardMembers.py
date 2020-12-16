@@ -1,4 +1,4 @@
-from Backend.db import db
+from Backend.db import db, ma
 
 
 class DBCardMembers(db.Model):
@@ -31,3 +31,11 @@ class DBCardMembers(db.Model):
         db.session.commit()
 
         return {'card_id': self.card_id, 'user_id': self.user_id}
+
+
+class DBCardMemberSchema(ma.Schema):
+    class Meta:
+        fields = ('card_id', 'user_id')
+
+cardMemberSchema = DBCardMemberSchema
+cardsMemberSchema = DBCardMemberSchema(many=True)
