@@ -31,7 +31,9 @@ CREATE TABLE IF NOT EXISTS "list"
 (
     "list_id"   INTEGER NOT NULL,
     "list_name"  VARCHAR(64) NOT NULL,
+    "list_order" INTEGER,
     "table_id"  INTEGER NOT NULL,
+    "is_archived" INTEGER CHECK ( is_archived in (0, 1)) NOT NULL ,
     PRIMARY KEY ("list_id")
 );
 
@@ -41,7 +43,17 @@ CREATE TABLE IF NOT EXISTS "card"
     "card_name"  VARCHAR(64) NOT NULL,
     "card_description" VARCHAR(1028),
     "list_id"  INTEGER NOT NULL,
+    "is_archived" INTEGER CHECK ( is_archived in (0, 1)) NOT NULL ,
+    "card_deadline" DATETIME,
     PRIMARY KEY ("card_id")
+);
+
+CREATE TABLE IF NOT EXISTS "card_members"
+(
+    "card_members_id" INTEGER NOT NULL,
+    "card_id" INTEGER NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    PRIMARY KEY ("card_members_id")
 );
 
 INSERT INTO "user" ("id", "name", "email", "password_hash", "access_level")

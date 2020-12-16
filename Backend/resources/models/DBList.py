@@ -14,6 +14,8 @@ class DBList(db.Model):
     list_id = db.Column(db.Integer, primary_key=True)
     list_name = db.Column(db.String(64), nullable=False)
     table_id = db.Column(db.Integer, index=True)
+    list_order = db.Column(db.Integer)
+    is_archived = db.Column(db.Integer, default=0)
 
     def setListName(self, newName):
         if newName is not None and len(newName) > 4 and self.list_name != newName:
@@ -23,10 +25,20 @@ class DBList(db.Model):
         if table_id is not None:
             self.table_id = table_id
 
+    def setIsArchived(self, is_archived):
+        if is_archived is not None:
+            self.is_archived = is_archived
+
+    def setListOrder(self, list_order):
+        if list_order is not None:
+            self.list_order = list_order
+
     def updateList(self, args):
         results = list()
         results.append(self.setListName(args["list_name"]))
         results.append(self.setTableId(args["table_id"]))
+        results.append(self.setIsArchived(args["is_archived"]))
+        results.append(self.setListOrder(args["list_order"]))
 
         for result in results:
             if result != None:
@@ -43,6 +55,7 @@ class DBList(db.Model):
 
         db.session.add(self)
         db.session.commit()
+
 
     @staticmethod
     def register(args):
@@ -65,7 +78,7 @@ class DBList(db.Model):
 
 class DBListSchema(ma.Schema):
     class Meta:
-        fields = ('list_id', 'list_name', 'table_id')
+        fields = ('list_id', 'list_name', 'table_id', 'list_order', 'is_archived')
 
 
 list_schema = DBListSchema()
