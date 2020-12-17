@@ -47,6 +47,10 @@ class CardResource(Resource):
         if card_id == card.card_id:
             db.session.delete(card)
             db.session.commit()
+            cards_members = DBCardMembers.query.filter(DBCardMembers.card_id == card_id).all()
+            for card_member in cards_members:
+                db.session.delete(card_member)
+                db.session.commit()
             return {'status_code': 'success', 'message': 'Card has been deleted'}, 200
 
     @staticmethod
