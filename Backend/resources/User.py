@@ -109,3 +109,17 @@ class UserAuth(Resource):
         db.session.delete(key)
         db.session.commit()
         return {'status_code': 'success', 'message': 'Your api key has been deleted'}, 200
+
+class Username(Resource):
+    @staticmethod
+    def get(user_id):
+        if user_id is None:
+            return {'status_code': 'missing_data', 'message': 'There is no ID in request'}, 400
+
+        user = DBUser.query.get(user_id)
+        if user is None:
+            return {'status_code': 'not_found', 'message': 'There is no user with such ID'}, 404
+
+        if user_id == user.id:
+            return {'username': user.name}, 200
+
