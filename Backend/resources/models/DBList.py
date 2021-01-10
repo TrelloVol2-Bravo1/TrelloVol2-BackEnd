@@ -34,6 +34,7 @@ class DBList(db.Model):
             self.list_order = list_order
 
     def updateList(self, args):
+        print('start')
         results = list()
         results.append(self.setListName(args["list_name"]))
         results.append(self.setTableId(args["table_id"]))
@@ -41,16 +42,16 @@ class DBList(db.Model):
         results.append(self.setListOrder(args["list_order"]))
 
         for result in results:
-            if result != None:
+            if result is not None:
                 return result
 
     def putRequest(self, args):
-        if args["list_name"] is None:
+        if args["list_name"] is None and args["table_id"] is None and args["is_archived"] is None and args["list_order"] is None:
             return {'status_code': 'missing data',
                     "message": "There is no data to update"}, 400
 
         result = self.updateList(args)
-        if result != None:
+        if result is not None:
             return result
 
         db.session.add(self)

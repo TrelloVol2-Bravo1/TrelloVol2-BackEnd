@@ -51,29 +51,43 @@ class ListResource(Resource):
     @staticmethod
     def put(list_id):
         args = parser.parse_args()
-        list = DBList.query.get(list_id)
-        actual_list_order = list.list_order
-        given_list_order = int(args['list_order'])
-        table_id = args['table_id']
-        lists = DBList.query.filter(DBList.table_id == table_id).group_by(DBList.list_order).all()
+        list_object = DBList.query.get(list_id)
 
-        print(given_list_order)
-        print(actual_list_order)
-        print()
+        if list_id is None:
+            return {'status_code': 'missing_data', 'message': 'There is no ID in request'}, 400
 
-        if given_list_order < actual_list_order:
-            for i in range(given_list_order - 1, len(lists)):
-                lists[i].setListOrder(i + 2)
-                db.session.add(lists[i])
-                db.session.commit()
-                print(i)
+        if list_object is None:
+            return {'status_code': 'not_found', 'message': 'There is no Table with such ID'}, 404
 
-        if given_list_order > actual_list_order:
-            for i in range(given_list_order - 1, actual_list_order - 2, -1):
-                lists[i].setListOrder(i)
-                db.session.add(lists[i])
-                db.session.commit()
-                print(i)
+        result = list_object.putRequest(args)
+
+        if result is not None:
+            return result
+
+        return {'status_code': 'success', 'message': 'List has been updated'}, 200
+
+
+        # actual_list_order = list.list_order
+        # given_list_order = int(args['list_order'])
+        # table_id = args['table_id']
+        # lists = DBList.query.filter(DBList.table_id == table_id).group_by(DBList.list_order).all()
+        #
+        # print(given_list_order)
+        # print(actual_list_order)
+        #
+        # if given_list_order < actual_list_order:
+        #     for i in range(given_list_order - 1, len(lists)):
+        #         lists[i].setListOrder(i + 2)
+        #         db.session.add(lists[i])
+        #         db.session.commit()
+        #         print(i)
+        #
+        # if given_list_order > actual_list_order:
+        #     for i in range(given_list_order - 1, actual_list_order - 2, -1):
+        #         lists[i].setListOrder(i)
+        #         db.session.add(lists[i])
+        #         db.session.commit()
+        #         print(i)
 
 
 
