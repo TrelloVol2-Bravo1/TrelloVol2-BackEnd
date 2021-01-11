@@ -13,6 +13,7 @@ class DBTable(db.Model):
 
     table_id = db.Column(db.Integer, primary_key=True)
     table_name = db.Column(db.String(64), nullable=False)
+    table_description = db.Column(db.String(1024))
     user_id = db.Column(db.Integer, index=True)
 
     def setTableName(self, newName):
@@ -23,9 +24,14 @@ class DBTable(db.Model):
         if user_id is not None:
             self.user_id = user_id
 
+    def setTableDescription(self, table_description):
+        if table_description is not None:
+            self.table_description = table_description
+
     def updateTable(self, args):
         results = list()
         results.append(self.setTableName(args["table_name"]))
+        results.append(self.setTableDescription(args["table_description"]))
         results.append(self.setUserId(args["user_id"]))
 
         for result in results:
@@ -33,7 +39,7 @@ class DBTable(db.Model):
                 return result
 
     def putRequest(self, args):
-        if args["table_name"] is None:
+        if args["table_name"] is None and args["table_description"] is None:
             return {'status_code': 'missing data',
                     "message": "There is no data to update"}, 400
 
@@ -65,7 +71,7 @@ class DBTable(db.Model):
 
 class DBTableSchema(ma.Schema):
     class Meta:
-        fields = ('table_id', 'table_name', 'user_id')
+        fields = ('table_id', 'table_name', 'table_description', 'user_id')
 
 
 table_schema = DBTableSchema()

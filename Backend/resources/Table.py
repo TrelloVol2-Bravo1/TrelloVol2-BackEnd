@@ -1,14 +1,15 @@
 from flask_restful import reqparse, Resource, request
 
-from Backend.resources.models.DBTable import DBTable, table_schema, tables_schema
-from Backend.db import db, ma
-
+from Backend.db import db
 from Backend.resources.models.DBAuth import DBAuth
+from Backend.resources.models.DBTable import DBTable, table_schema, tables_schema
 
 parser = reqparse.RequestParser()
 parser.add_argument('table_id')
 parser.add_argument('table_name')
+parser.add_argument('table_description')
 parser.add_argument('user_id')
+
 
 class TableResource(Resource):
     @staticmethod
@@ -63,7 +64,8 @@ class TablesResource(Resource):
     @staticmethod
     def get():
         # all_tables = DBTable.query.all()
-        key = DBAuth.query.filter_by(user_id=request.headers.get('x-user-id'), api_key=request.headers.get('x-api-key')).first()
+        key = DBAuth.query.filter_by(user_id=request.headers.get('x-user-id'),
+                                     api_key=request.headers.get('x-api-key')).first()
         if key is None:
             return {'status_code': 'failed', 'message': 'Permission denied'}, 400
         all_tables = DBTable.query.filter_by(user_id=request.headers.get('x-user-id')).all()
@@ -73,7 +75,8 @@ class TablesResource(Resource):
     @staticmethod
     def post():
         args = parser.parse_args()
-        key = DBAuth.query.filter_by(user_id=request.headers.get('x-user-id'), api_key=request.headers.get('x-api-key')).first()
+        key = DBAuth.query.filter_by(user_id=request.headers.get('x-user-id'),
+                                     api_key=request.headers.get('x-api-key')).first()
         if key is None:
             return {'status_code': 'failed', 'message': 'Permission denied'}, 400
         args["user_id"] = key.user_id

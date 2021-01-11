@@ -47,7 +47,7 @@ class DBCard(db.Model):
                 return result
 
     def putRequest(self, args):
-        if args["card_name"] is None:
+        if args["card_name"] is None and args["card_description"] is None and args["card_deadline"] is None and args["is_archived"] is None:
             return {'status_code': 'missing data',
                     "message": "There is no data to update"}, 400
 

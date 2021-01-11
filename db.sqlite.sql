@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS "table"
 (
     "table_id"   INTEGER NOT NULL,
     "table_name"  VARCHAR(64) NOT NULL,
+    "table_description" VARCHAR(1024),
     "user_id"  INTEGER NOT NULL,
     PRIMARY KEY ("table_id")
 );
@@ -32,6 +33,7 @@ CREATE TABLE IF NOT EXISTS "list"
     "list_id"   INTEGER NOT NULL,
     "list_name"  VARCHAR(64) NOT NULL,
     "list_order" INTEGER,
+    "list_description" VARCHAR(1024),
     "table_id"  INTEGER NOT NULL,
     "is_archived" INTEGER CHECK ( is_archived in (0, 1)) NOT NULL ,
     PRIMARY KEY ("list_id")

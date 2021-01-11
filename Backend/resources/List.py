@@ -11,6 +11,7 @@ parser.add_argument('list_id')
 parser.add_argument('list_name')
 parser.add_argument('table_id')
 parser.add_argument('list_order')
+parser.add_argument('list_description')
 parser.add_argument('is_archived')
 
 

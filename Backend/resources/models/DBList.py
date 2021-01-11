@@ -15,6 +15,7 @@ class DBList(db.Model):
     list_name = db.Column(db.String(64), nullable=False)
     table_id = db.Column(db.Integer, index=True)
     list_order = db.Column(db.Integer)
+    list_description = db.Column(db.String(1024))
     is_archived = db.Column(db.Integer, default=0)
 
     def setListName(self, newName):
@@ -33,20 +34,24 @@ class DBList(db.Model):
         if list_order is not None:
             self.list_order = list_order
 
+    def setListDescription(self, list_description):
+        if list_description is not None:
+            self.list_description = list_description
+
     def updateList(self, args):
-        print('start')
         results = list()
         results.append(self.setListName(args["list_name"]))
         results.append(self.setTableId(args["table_id"]))
         results.append(self.setIsArchived(args["is_archived"]))
         results.append(self.setListOrder(args["list_order"]))
+        results.append(self.setListDescription(args["list_description"]))
 
         for result in results:
             if result is not None:
                 return result
 
     def putRequest(self, args):
-        if args["list_name"] is None and args["table_id"] is None and args["is_archived"] is None and args["list_order"] is None:
+        if args["list_name"] is None and args["table_id"] is None and args["is_archived"] is None and args["list_order"] is None and args["list_description"] is None:
             return {'status_code': 'missing data',
                     "message": "There is no data to update"}, 400
 
@@ -79,7 +84,7 @@ class DBList(db.Model):
 
 class DBListSchema(ma.Schema):
     class Meta:
-        fields = ('list_id', 'list_name', 'table_id', 'list_order', 'is_archived')
+        fields = ('list_id', 'list_name', 'table_id', 'list_order', 'list_description', 'is_archived')
 
 
 list_schema = DBListSchema()
