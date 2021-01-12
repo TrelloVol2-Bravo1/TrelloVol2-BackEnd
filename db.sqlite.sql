@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS "card"
     "list_id"  INTEGER NOT NULL,
     "is_archived" INTEGER CHECK ( is_archived in (0, 1)) NOT NULL ,
     "card_deadline" DATETIME,
+    "card_order" INTEGER,
     PRIMARY KEY ("card_id")
 );
 

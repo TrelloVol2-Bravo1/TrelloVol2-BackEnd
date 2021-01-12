@@ -12,10 +12,15 @@ class DBCard(db.Model):
     list_id = db.Column(db.Integer, index=True)
     card_deadline = db.Column(db.DATETIME, default=datetime.utcnow())
     is_archived = db.Column(db.Integer, default=0)
+    card_order = db.Column(db.Integer)
 
     def setCardName(self, newName):
         if newName is not None and len(newName) > 4 and self.card_name != newName:
             self.card_name = newName
+
+    def setCardOrder(self, card_order):
+        if card_order is not None:
+            self.card_order = card_order
 
     def setListId(self, list_id):
         if list_id is not None:
@@ -41,13 +46,14 @@ class DBCard(db.Model):
         results.append(self.setListId(args["list_id"]))
         results.append(self.setDeadline(args['card_deadline']))
         results.append(self.setIsArchived(args['is_archived']))
+        results.append(self.setCardOrder(args['card_order']))
 
         for result in results:
             if result != None:
                 return result
 
     def putRequest(self, args):
-        if args["card_name"] is None and args["card_description"] is None and args["card_deadline"] is None and args["is_archived"] is None:
+        if args["card_name"] is None and args["card_description"] is None and args["card_deadline"] is None and args["is_archived"] is None and args["card_order"] is None:
             return {'status_code': 'missing data',
                     "message": "There is no data to update"}, 400
 
@@ -79,7 +85,7 @@ class DBCard(db.Model):
 
 class DBCardSchema(ma.Schema):
     class Meta:
-        fields = ('card_id', 'card_name', 'card_description', 'list_id', 'card_deadline', 'is_archived')
+        fields = ('card_id', 'card_name', 'card_description', 'list_id', 'card_deadline', 'is_archived', 'card_order')
 
 
 card_schema = DBCardSchema()

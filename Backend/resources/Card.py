@@ -15,6 +15,7 @@ parser.add_argument('list_id')
 parser.add_argument('user_id')
 parser.add_argument('card_deadline')
 parser.add_argument('is_archived')
+parser.add_argument('card_order')
 
 class CardResource(Resource):
     @staticmethod
