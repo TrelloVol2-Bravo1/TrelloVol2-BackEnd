@@ -67,6 +67,16 @@ CREATE TABLE IF NOT EXISTS "table_members"
     PRIMARY KEY ("table_members_id")
 );
 
+CREATE TABLE IF NOT EXISTS "logs_card"
+(
+    "log_id" INTEGER NOT NULL,
+    "log_content" VARCHAR(64) NOT NULL,
+    "table_id" INTEGER NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "log_date" DATETIME,
+    PRIMARY KEY ("log_id")
+);
+
 INSERT INTO "user" ("id", "name", "email", "password_hash", "access_level")
 VALUES(1,"admin", "admin@admin.pl", "$6$rounds=656000$.TQuK6zBu0dPK4p0$.DEH3JxVHVvXEKv.3uq/WDzM5i2cA5rzQuM5bIQmqc6xu4Oosf99NL4eEj77hv/J4zE./A3GJhiCFxISnWeZV0", 0);
 

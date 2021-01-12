@@ -2,6 +2,9 @@ from flask_restful import reqparse, Resource, request
 
 from Backend.resources.models.DBCardMembers import DBCardMembers, cardMemberSchema, cardsMemberSchema
 from Backend.resources.models.DBCard import DBCard, card_schema, cards_schema
+from Backend.resources.models.DBUser import DBUser
+from Backend.resources.models.DBList import DBList
+from Backend.resources.models.DBLogsCard import DBLogsCard
 from Backend.db import db, ma
 
 from Backend.resources.models.DBAuth import DBAuth
@@ -29,7 +32,7 @@ class CardResource(Resource):
         if card is None:
             return {'status_code': 'not_found', 'message': 'There is no Card with such ID'}, 404
 
-        if card == card.card_id:
+        if card_id == card.card_id:
             return {'status_code': 'success', 'data': card_schema.dump(list)}, 200
 
     @staticmethod
@@ -46,12 +49,13 @@ class CardResource(Resource):
             return {'status_code': 'not archived', 'message': 'Card must be archived to be deleted'}, 400
 
         if card_id == card.card_id:
-            db.session.delete(card)
-            db.session.commit()
             cards_members = DBCardMembers.query.filter(DBCardMembers.card_id == card_id).all()
             for card_member in cards_members:
                 db.session.delete(card_member)
                 db.session.commit()
+
+            db.session.delete(card)
+            db.session.commit()
             return {'status_code': 'success', 'message': 'Card has been deleted'}, 200
 
     @staticmethod
@@ -64,6 +68,44 @@ class CardResource(Resource):
 
         if card is None:
             return {'status_code': 'not_found', 'message': 'There is no Card with such ID'}, 404
+
+        key = DBAuth.query.filter_by(user_id=request.headers.get('x-user-id'),
+                                     api_key=request.headers.get('x-api-key')).first()
+        if key is None:
+            return {'status_code': 'failed', 'message': 'Permission denied'}, 400
+        args["user_id"] = key.user_id
+
+
+
+        username = DBUser.query.get(args['user_id']).name
+        table_id = DBList.query.get(args['list_id']).table_id
+
+        log_object = DBLogsCard()
+        log_object.user_id = args['user_id']
+        log_object.table_id = table_id
+
+        if int(card.list_id) != int(args['list_id']):
+            previousListName = DBList.query.get(card.list_id).list_name
+            nextListName = DBList.query.get(args['list_id']).list_name
+            log_object.log_content = username + " moved " + args['card_name'] + " from " + previousListName + " to " + nextListName
+            print(log_object.log_content)
+            db.session.add(log_object)
+            db.session.commit()
+
+        if int(card.is_archived) == 0 and int(args['is_archived']) == 1:
+            log_object.log_content = username + " archivized " + args['card_name']
+            db.session.add(log_object)
+            db.session.commit()
+
+        elif int(card.is_archived) == 1 and int(args['is_archived']) == 0:
+            log_object.log_content = username + " send " + args['card_name'] + " to board"
+            db.session.add(log_object)
+            db.session.commit()
+
+        if card.card_name != args['card_name']:
+            log_object.log_content = username + " changed name of " + card.card_name + " into " + args['card_name']
+            db.session.add(log_object)
+            db.session.commit()
 
         result = card.putRequest(args)
 
@@ -87,10 +129,21 @@ class CardsResource(Resource):
     @staticmethod
     def post():
         args = parser.parse_args()
-        #key = DBAuth.query.filter_by(user_id=request.headers.get('x-user-id'), api_key=request.headers.get('x-api-key')).first()
-        #if key is None:
-        #    return {'status_code': 'failed', 'message': 'Permission denied'}, 400
-        #args["user_id"] = key.user_id
+        key = DBAuth.query.filter_by(user_id=request.headers.get('x-user-id'), api_key=request.headers.get('x-api-key')).first()
+        if key is None:
+           return {'status_code': 'failed', 'message': 'Permission denied'}, 400
+        args["user_id"] = key.user_id
+
+        username = DBUser.query.get(args['user_id']).name
+        list_name = DBList.query.get(args['list_id']).list_name
+        table_id = DBList.query.get(args['list_id']).table_id
+
+        log_object = DBLogsCard()
+        log_object.user_id = args['user_id']
+        log_object.log_content = username + " added " + args['card_name'] + " to " + list_name
+        log_object.table_id = table_id
+        db.session.add(log_object)
+        db.session.commit()
 
         result = DBCard.register(args)
         if result != None:
