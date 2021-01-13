@@ -1,8 +1,7 @@
-from flask import g
 from flask_restful import reqparse, Resource, request
 
 from Backend.resources.models.DBUser import DBUser, user_schema, users_schema
-from Backend.db import db, ma
+from Backend.db import db
 
 from Backend.resources.models.DBAuth import DBAuth
 
@@ -76,7 +75,6 @@ class UsersResource(Resource):
     @staticmethod
     def post():
         args = parser.parse_args()
-        # email = args["email"]
 
         result = DBUser.register(args)
         if result != None:

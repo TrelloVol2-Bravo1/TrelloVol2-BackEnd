@@ -1,10 +1,7 @@
 from flask_restful import reqparse, Resource, request
 
 from Backend.resources.models.DBList import DBList, list_schema, lists_schema
-from Backend.db import db, ma
-
-from Backend.resources.models.DBAuth import DBAuth
-from Backend.resources.models.DBTable import DBTable
+from Backend.db import db
 
 parser = reqparse.RequestParser()
 parser.add_argument('list_id')
