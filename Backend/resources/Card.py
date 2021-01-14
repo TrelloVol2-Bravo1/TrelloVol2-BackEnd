@@ -75,6 +75,21 @@ class CardResource(Resource):
             return {'status_code': 'failed', 'message': 'Permission denied'}, 400
         args["user_id"] = key.user_id
 
+        if args['card_name'] is None:
+            args['card_name'] = DBCard.query.get(card_id).card_name
+
+        if args['card_description'] is None:
+            args['card_description'] = DBCard.query.get(card_id).card_description
+
+        if args['list_id'] is None:
+            args['list_id'] = DBCard.query.get(card_id).list_id
+
+        if args['is_archived'] is None:
+            args['is_archived'] = DBCard.query.get(card_id).is_archived
+
+        if args['card_order'] is None:
+            args['card_order'] = DBCard.query.get(card_id).card_order
+
 
 
         username = DBUser.query.get(args['user_id']).name
