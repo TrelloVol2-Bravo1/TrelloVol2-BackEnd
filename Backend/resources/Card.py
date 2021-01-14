@@ -1,14 +1,13 @@
 from flask_restful import reqparse, Resource, request
 
-from Backend.resources.models.DBCardMembers import DBCardMembers, cardMemberSchema, cardsMemberSchema
+from Backend.resources.models.DBCardMembers import DBCardMembers, cardsMemberSchema
 from Backend.resources.models.DBCard import DBCard, card_schema, cards_schema
 from Backend.resources.models.DBUser import DBUser
 from Backend.resources.models.DBList import DBList
 from Backend.resources.models.DBLogsCard import DBLogsCard
-from Backend.db import db, ma
+from Backend.db import db
 
 from Backend.resources.models.DBAuth import DBAuth
-from Backend.resources.models.DBTable import DBTable
 
 parser = reqparse.RequestParser()
 parser.add_argument('card_id')

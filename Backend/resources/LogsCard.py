@@ -2,8 +2,6 @@ from flask_restful import reqparse, Resource, request
 
 from Backend.resources.models.DBLogsCard import logs_schema
 
-
-from Backend.resources.models.DBAuth import DBAuth
 from Backend.resources.models.DBTable import DBTable
 from Backend.resources.models.DBLogsCard import DBLogsCard
 
